@@ -1,6 +1,7 @@
 package com.stambulo.room;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private static final float AbsoluteZero = -273.15f;
+    private SharedPreferences sharedPref;
     private OpenWeather openWeather;
     private String[] historyList = {"Moscow"};
     private String keyAPI = "0d0685c3c18d92278b9ac3d7bd62d688";
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         initRetorfit();
         initEvents();
         initViews();
+        initPreferences();
     }
 
     private void initViews() {
@@ -55,6 +58,15 @@ public class MainActivity extends AppCompatActivity {
         currentTemperatureTextView = findViewById(R.id.textTemprature);
         inputCityName = findViewById(R.id.inputCityName);
         refresh = findViewById(R.id.refresh);
+    }
+
+    private void initPreferences() {
+        sharedPref = getPreferences(MODE_PRIVATE);
+        textCity.setText(sharedPref.getString("city", "Moscow"));
+        currentTemperatureTextView.setText(sharedPref.getString("temp", "20"));
+        textHumidity.setText(sharedPref.getString("humidity", "35"));
+        textPressure.setText(sharedPref.getString("pressure", "757"));
+        textWindSpeed.setText(sharedPref.getString("windSpeed", "6"));
     }
 
     // Здесь создадим обработку клика кнопки
@@ -112,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestRetrofit(String city, String keyApi) {
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("city", city);
                 openWeather.loadWeather(city, keyApi)
                 .enqueue(new Callback<WeatherRequest>() {
                     @Override
@@ -119,15 +133,20 @@ public class MainActivity extends AppCompatActivity {
                         if (response.body() != null) {
                             float temp = response.body().getMain().getTemp() + AbsoluteZero;
                             currentTemperatureTextView.setText(Float.toString(temp));
+                            editor.putString("temp", Float.toString(temp));
 
                             float humidity = response.body().getMain().getHumidity();
                             textHumidity.setText(Float.toString(humidity));
+                            editor.putString("humidity", Float.toString(humidity));
 
                             float pressure = response.body().getMain().getPressure();
                             textPressure.setText(Float.toString(pressure));
+                            editor.putString("pressure", Float.toString(pressure));
 
                             float windSpeed = response.body().getWind().getSpeed();
                             textWindSpeed.setText(Float.toString(windSpeed));
+                            editor.putString("windSpeed", Float.toString(windSpeed));
+                            editor.commit();
                         }
                     }
 
