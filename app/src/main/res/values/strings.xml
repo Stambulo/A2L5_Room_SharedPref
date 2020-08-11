@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Room &amp; SharedPreferences</string>
+
+    <string name="password">Password</string>
+    <string name="ok">Next</string>
+    <string name="title_activity_coordinator_layout">CoordinatorLayoutActivity</string>
+    <string name="justText">Введите название города</string>
+    <string name="snackBarDemo">Демонстрация элемента SnackBar</string>
+
+    <string name="city">Город</string>
+    <string name="temperature">Температура</string>
+    <string name="pressure">Давление</string>
+    <string name="humidity">Влажность</string>
+    <string name="wind_speed">Скорость ветра</string>
+    <string name="refresh">Обновить</string>
+    <string name="place_not_found">Нет такого города</string>
+    <string name="history">История</string>
+</resources>
